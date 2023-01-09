@@ -92,7 +92,10 @@ public class CarController : MonoBehaviour
     {
         return Vector2.Dot(transform.right, carRigidbody2D.velocity);
     }
-
+    public float getVelocityMagnitude()
+    {
+        return carRigidbody2D.velocity.magnitude;
+    }
     public bool IsDrifting(out float lateralVelocity, out bool isBraking)
     {
         lateralVelocity = getLateralVelocity();
@@ -103,7 +106,7 @@ public class CarController : MonoBehaviour
             isBraking = true;
             return true;
         }
-        if(Mathf.Abs(getLateralVelocity()) > 1.5f){
+        if(Mathf.Abs(getLateralVelocity()) > 1.2f){
             return true;
         }
         return false;
