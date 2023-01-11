@@ -1,18 +1,35 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
-public class LapCounterű : MonoBehaviour
+public class LapCounter : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
+    int passedCheckPointNum = 0;
+    float timeFromLastCheckPoint = 0;
+
+    int passedCheckPointCount = 0;
+
+    public event Action<LapCounter> onPassCheckPoint;
+
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        
+        if (collision.CompareTag("CheckPoint"))
+        {
+            CheckPoint checkPoint = collision.GetComponent<CheckPoint>();
+
+            if(passedCheckPointNum + 1 == checkPoint.checkPointNum)
+            {
+                passedCheckPointNum = checkPoint.checkPointNum;
+
+                passedCheckPointCount++;
+
+                timeFromLastCheckPoint = Time.time;
+
+                onPassCheckPoint?.Invoke(this);
+            }
+        }
     }
 }
