@@ -571,7 +571,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 358692400}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.06, y: -3.2, z: 0}
+  m_LocalPosition: {x: 0.4, y: -0.96, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2418,7 +2418,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 581109167}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 2.33, z: 0}
+  m_LocalPosition: {x: 0, y: 2, z: 0}
   m_LocalScale: {x: 0.35, y: 0.35, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -4882,7 +4882,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1764372722}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.08, y: -3.2, z: 0}
+  m_LocalPosition: {x: -1.08, y: -0.96, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5165,7 +5165,7 @@ Transform:
   m_GameObject: {fileID: 2031634756}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.35, y: 0.35, z: 1}
+  m_LocalScale: {x: 0.6356636, y: 0.8105285, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1764372723}
@@ -5214,12 +5214,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: ac6480a3367709d4c9c370cff9e3859a, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 560970a250279344aafd96c2edda20f3, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 4.46, y: 8.5}
+  m_Size: {x: 4.5, y: 4.5}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -5242,83 +5242,35 @@ PolygonCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 4.46, y: 8.5}
-    newSize: {x: 4.46, y: 8.5}
+    oldSize: {x: 4.5, y: 4.5}
+    newSize: {x: 4.5, y: 4.5}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: 1.29, y: -3.57}
-      - {x: 1.4399999, y: -3.4199998}
-      - {x: 1.51, y: -3.22}
-      - {x: 1.5699999, y: -2.77}
-      - {x: 1.56, y: -1.5699999}
-      - {x: 1.51, y: -1.25}
-      - {x: 1.49, y: -1.25}
-      - {x: 1.49, y: -0.42999998}
-      - {x: 1.53, y: -0.39999998}
-      - {x: 1.52, y: -0.03}
-      - {x: 1.49, y: 0.04}
-      - {x: 1.5, y: 0.53999996}
-      - {x: 1.48, y: 0.53999996}
-      - {x: 1.49, y: 0.96999997}
-      - {x: 1.74, y: 0.9}
-      - {x: 1.75, y: 0.93}
-      - {x: 1.75, y: 1.05}
-      - {x: 1.6999999, y: 1.13}
-      - {x: 1.48, y: 1.1999999}
-      - {x: 1.48, y: 1.48}
-      - {x: 1.52, y: 1.55}
-      - {x: 1.55, y: 1.68}
-      - {x: 1.54, y: 2.8}
-      - {x: 1.53, y: 2.98}
-      - {x: 1.43, y: 3.3}
-      - {x: 1.35, y: 3.4199998}
-      - {x: 1.23, y: 3.56}
-      - {x: 1.01, y: 3.6999998}
-      - {x: 0.94, y: 3.73}
-      - {x: 0.74, y: 3.79}
-      - {x: 0.5, y: 3.82}
-      - {x: -0.32, y: 3.82}
-      - {x: -0.45999998, y: 3.81}
-      - {x: -0.72999996, y: 3.79}
-      - {x: -1.01, y: 3.6999998}
-      - {x: -1.14, y: 3.6299999}
-      - {x: -1.31, y: 3.49}
-      - {x: -1.39, y: 3.37}
-      - {x: -1.49, y: 3.1699998}
-      - {x: -1.54, y: 2.9299998}
-      - {x: -1.55, y: 2.81}
-      - {x: -1.55, y: 1.78}
-      - {x: -1.54, y: 1.5899999}
-      - {x: -1.49, y: 1.48}
-      - {x: -1.48, y: 1.1899999}
-      - {x: -1.67, y: 1.11}
-      - {x: -1.73, y: 1.06}
-      - {x: -1.75, y: 0.96999997}
-      - {x: -1.75, y: 0.91999996}
-      - {x: -1.73, y: 0.90999997}
-      - {x: -1.68, y: 0.90999997}
-      - {x: -1.49, y: 0.96}
-      - {x: -1.48, y: -0.01}
-      - {x: -1.5, y: -0.04}
-      - {x: -1.52, y: -0.13}
-      - {x: -1.51, y: -0.42999998}
-      - {x: -1.4699999, y: -0.45}
-      - {x: -1.4699999, y: -1.27}
-      - {x: -1.48, y: -1.28}
-      - {x: -1.53, y: -1.61}
-      - {x: -1.53, y: -2.75}
-      - {x: -1.48, y: -3.1999998}
-      - {x: -1.4399999, y: -3.35}
-      - {x: -1.37, y: -3.47}
-      - {x: -1.22, y: -3.59}
-      - {x: -1.02, y: -3.73}
-      - {x: -0.95, y: -3.77}
-      - {x: -0.26999998, y: -3.82}
-      - {x: 0.45, y: -3.82}
-      - {x: 0.94, y: -3.77}
-      - {x: 1.06, y: -3.73}
-      - {x: 1.13, y: -3.6399999}
+    - - {x: 0.48, y: -1.1899999}
+      - {x: 0.7, y: -0.84999996}
+      - {x: 0.7, y: -0.32}
+      - {x: 0.59, y: -0.29999998}
+      - {x: 0.7, y: 0.66999996}
+      - {x: 0.7, y: 1.16}
+      - {x: 0.57, y: 1.28}
+      - {x: 0.52, y: 1.5}
+      - {x: 0.14999999, y: 1.7099999}
+      - {x: -0.56, y: 1.7099999}
+      - {x: -0.59999996, y: 1.6999999}
+      - {x: -0.90999997, y: 1.61}
+      - {x: -1.05, y: 1.5}
+      - {x: -1.26, y: 1.18}
+      - {x: -1.26, y: 0.65}
+      - {x: -1.1899999, y: 0.61}
+      - {x: -1.26, y: -0.29999998}
+      - {x: -1.26, y: -0.85999995}
+      - {x: -1.0799999, y: -1.17}
+      - {x: -0.85999995, y: -1.26}
+      - {x: -0.65, y: -1.26}
+      - {x: -0.63, y: -1.15}
+      - {x: 0.11, y: -1.26}
+      - {x: 0.29, y: -1.26}
