@@ -12,10 +12,10 @@ public class CarController : MonoBehaviour
     public float turnFactor = 5.2f;
     public float maxSpeed = 10;
 
-    float accelerationInput = 0;
-    float steeringInput = 0;
+    public float accelerationInput = 0;
+    public float steeringInput = 0;
 
-    float rotationAngle = 0;
+    public float rotationAngle = 0;
 
     //Accest to Unity components
     Rigidbody2D carRigidbody2D;
@@ -58,9 +58,12 @@ public class CarController : MonoBehaviour
     void ApplyEngineForce()
     {
         if (accelerationInput == 0)
-            carRigidbody2D.drag = Mathf.Lerp(carRigidbody2D.drag, 2.0f, Time.fixedDeltaTime * 2);
+            carRigidbody2D.drag = Mathf.Lerp(carRigidbody2D.drag, 1.9f, Time.fixedDeltaTime * 2);
         else
-            carRigidbody2D.drag = 0;
+            if(accelerationInput < 0)
+                carRigidbody2D.drag = 1.2f;
+                else
+                    carRigidbody2D.drag = 0;
 
         if(carRigidbody2D.velocity.magnitude >= maxSpeed)
         {

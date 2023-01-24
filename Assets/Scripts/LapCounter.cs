@@ -2,11 +2,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEngine;
 
 public class LapCounter : MonoBehaviour
 {
-
+    public CheckPoint[] checkPoints;
     public int passedCheckPointNum = 0;
     float timeFromLastCheckPoint = 0;
 
@@ -19,8 +20,20 @@ public class LapCounter : MonoBehaviour
 
     public event Action<LapCounter> onPassCheckPoint;
 
+    private void Start()
+    {
+        checkPoints = GameObject.FindObjectsOfType<CheckPoint>();
+        foreach (CheckPoint cp in checkPoints)
+        {
+            if(cp.checkPointNum != 1)
+            {
+                cp.gameObject.SetActive(false);
+            }
+        }
+    }
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        
         if (isRaceComplete)
         {
             Debug.Log("Race is complete");
@@ -50,6 +63,15 @@ public class LapCounter : MonoBehaviour
 
                 onPassCheckPoint?.Invoke(this);
             }
+        }
+        foreach (CheckPoint cp in checkPoints)
+        {
+            if (cp.checkPointNum == passedCheckPointNum + 1)
+            {
+                cp.gameObject.SetActive(true);
+            }
+            else
+                cp.gameObject.SetActive(false);
         }
     }
 }
