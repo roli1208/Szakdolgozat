@@ -11,6 +11,7 @@ public class CarController : MonoBehaviour
     public float accelerationFactor = 5.0f;
     public float turnFactor = 5.2f;
     public float maxSpeed = 10;
+    public float reverseMaxSpeed = 3f;
 
     public float accelerationInput = 0;
     public float steeringInput = 0;
@@ -23,12 +24,12 @@ public class CarController : MonoBehaviour
     void Awake()
     {
         carRigidbody2D = GetComponent<Rigidbody2D>();
+        rotationAngle = carRigidbody2D.transform.localEulerAngles.z;
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        
     }
 
     // Update is called once per frame
@@ -43,16 +44,23 @@ public class CarController : MonoBehaviour
         KillOrthogonalVelocity();
         ApplySteering();
     }
-
+    public float minSpeedBeforeTurn;
      void ApplySteering()
     {
-        float minSpeedBeforeTurn = carRigidbody2D.velocity.magnitude / 8;
+        minSpeedBeforeTurn = carRigidbody2D.velocity.magnitude / 9;
         minSpeedBeforeTurn = Mathf.Clamp01(minSpeedBeforeTurn);
+
+
         //Change angle based on the input
-        rotationAngle -= steeringInput * turnFactor * minSpeedBeforeTurn;
+        if(accelerationInput >= 0)
+        {
+            rotationAngle -= steeringInput * turnFactor * minSpeedBeforeTurn;
+        }else
+            rotationAngle += steeringInput * turnFactor * minSpeedBeforeTurn;
+
 
         //Apply the rotation to the car Rigidbody
-         carRigidbody2D.MoveRotation(rotationAngle);
+        carRigidbody2D.MoveRotation(rotationAngle);
     }
 
     void ApplyEngineForce()
@@ -60,12 +68,16 @@ public class CarController : MonoBehaviour
         if (accelerationInput == 0)
             carRigidbody2D.drag = Mathf.Lerp(carRigidbody2D.drag, 1.9f, Time.fixedDeltaTime * 2);
         else
-            if(accelerationInput < 0)
+            if (accelerationInput < 0)
                 carRigidbody2D.drag = 1.2f;
-                else
-                    carRigidbody2D.drag = 0;
+                 else
+                     carRigidbody2D.drag = 0;
 
-        if(carRigidbody2D.velocity.magnitude >= maxSpeed)
+        if(accelerationInput > 0 && carRigidbody2D.velocity.magnitude >= maxSpeed)
+        {
+            return;
+        }
+        if (accelerationInput < 0 && carRigidbody2D.velocity.magnitude >= reverseMaxSpeed)
         {
             return;
         }
