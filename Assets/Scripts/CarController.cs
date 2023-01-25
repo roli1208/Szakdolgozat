@@ -56,7 +56,8 @@ public class CarController : MonoBehaviour
         {
             rotationAngle -= steeringInput * turnFactor * minSpeedBeforeTurn;
         }else
-            rotationAngle += steeringInput * turnFactor * minSpeedBeforeTurn;
+            if(accelerationInput < 0 && Vector2.Dot(transform.up, carRigidbody2D.velocity) < 0)
+                rotationAngle += steeringInput * turnFactor * minSpeedBeforeTurn;
 
 
         //Apply the rotation to the car Rigidbody

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VectorGraphics;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -76,5 +77,9 @@ public class ButtonClickHandler : MonoBehaviour
     public void setQuality()
     {
         QualitySettings.SetQualityLevel(qualityDropdown.value);
+    }
+    public void onClickSnigleplayer()
+    {
+        SceneManager.LoadScene("MapSelector");
     }
 }
