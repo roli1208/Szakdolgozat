@@ -13,7 +13,7 @@ public class LapCounter : MonoBehaviour
 
     int passedCheckPointCount = 0;
 
-    int lapNum = 1;
+    public int lapNum = 1;
     int completedLapNum = 0;
 
     bool isRaceComplete = false;

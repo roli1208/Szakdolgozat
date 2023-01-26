@@ -9,6 +9,10 @@ public class MapSelectorHandler : MonoBehaviour
     {
         SceneManager.LoadScene("MainMenu");
     }
+    public void onFirstMapClick()
+    {
+        SceneManager.LoadScene("Map1");
+    }
     // Start is called before the first frame update
     void Start()
     {

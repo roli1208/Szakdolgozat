@@ -7,16 +7,24 @@ using UnityEngine;
 public class CarController : MonoBehaviour
 {
 
-    public float driftFactor = 0.6f;
-    public float accelerationFactor = 5.0f;
+    public float driftFactor = 0.75f;
+    public float accelerationFactor = 3.2f;
     public float turnFactor = 5.2f;
-    public float maxSpeed = 10;
+
+    public float actualMaxSpeed = 7f;
+    public float actualDriftFactor = 0.75f;
+
+    public float maxSpeed = 7f;
+    public float changedMaxSpeed = 4f;
     public float reverseMaxSpeed = 3f;
+    public float changedDriftFactor = 0.95f;
 
     public float accelerationInput = 0;
     public float steeringInput = 0;
 
     public float rotationAngle = 0;
+
+    public PolygonCollider2D track;
 
     //Accest to Unity components
     Rigidbody2D carRigidbody2D;
@@ -35,9 +43,24 @@ public class CarController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
-    }
 
+    }
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision != collision.CompareTag("CheckPoint"))
+        {
+            actualMaxSpeed = changedMaxSpeed;
+            actualDriftFactor = changedDriftFactor;
+        }
+    }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision == track)
+        {
+            actualMaxSpeed = maxSpeed;
+            actualDriftFactor = driftFactor;
+        }
+    }
     void FixedUpdate()
     {
         ApplyEngineForce();
@@ -58,6 +81,8 @@ public class CarController : MonoBehaviour
         }else
             if(accelerationInput < 0 && Vector2.Dot(transform.up, carRigidbody2D.velocity) < 0)
                 rotationAngle += steeringInput * turnFactor * minSpeedBeforeTurn;
+        else
+            rotationAngle -= steeringInput * turnFactor * minSpeedBeforeTurn;
 
 
         //Apply the rotation to the car Rigidbody
@@ -74,7 +99,7 @@ public class CarController : MonoBehaviour
                  else
                      carRigidbody2D.drag = 0;
 
-        if(accelerationInput > 0 && carRigidbody2D.velocity.magnitude >= maxSpeed)
+        if(accelerationInput > 0 && carRigidbody2D.velocity.magnitude >= actualMaxSpeed)
         {
             return;
         }
@@ -95,7 +120,7 @@ public class CarController : MonoBehaviour
         Vector2 forwardVelocity = transform.up * Vector2.Dot(carRigidbody2D.velocity, transform.up);
         Vector2 rigtVelocity = transform.right * Vector2.Dot(carRigidbody2D.velocity, transform.right);
 
-        carRigidbody2D.velocity = forwardVelocity + rigtVelocity * driftFactor;
+        carRigidbody2D.velocity = forwardVelocity + rigtVelocity * actualDriftFactor;
     }
 
     public void setInputVector(Vector2 inputVector)
@@ -127,4 +152,5 @@ public class CarController : MonoBehaviour
         }
         return false;
     }
+
 }
