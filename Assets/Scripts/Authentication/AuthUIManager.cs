@@ -8,8 +8,6 @@ public class AuthUIManager : MonoBehaviour
    public static AuthUIManager instance;
 
     [SerializeField]
-    private GameObject checkingForAccountUI;
-    [SerializeField]
     private GameObject loginUI;
     [SerializeField]
     private GameObject registerUI;
@@ -33,8 +31,7 @@ public class AuthUIManager : MonoBehaviour
         FirebaseManager.instance.ClearOutputs();
         loginUI.SetActive(false);
         registerUI.SetActive(false);
-        //verifyEmailUI.SetActive(false);
-       // checkingForAccountUI.SetActive(false);
+        verifyEmailUI.SetActive(false);
     }
     public void LoginScreen()
     {
@@ -52,7 +49,11 @@ public class AuthUIManager : MonoBehaviour
         verifyEmailUI.SetActive(true);
         if (_emailSent)
         {
-            verifyEmailText.text = $"Verification email sent to: {_email}";
+            verifyEmailText.text = $"Verification email sent to: {_email}\nPlease verify your email and log in!";
+        }
+        else
+        {
+            verifyEmailText.text = $"Email not sent!";
         }
     }
 }

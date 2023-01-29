@@ -1,3 +1,4 @@
+using Firebase.Auth;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -43,10 +44,11 @@ public class ButtonClickHandler : MonoBehaviour
 
         QualitySettings.SetQualityLevel(3);
     }
-
-    public void onSingleplayerClick()
+    public void onLogoutClick()
     {
-
+        FirebaseAuth.DefaultInstance.SignOut();
+        Debug.Log("Logged out");
+        SceneManager.LoadScene("Authentication");
     }
     public void onExitClick()
     {
