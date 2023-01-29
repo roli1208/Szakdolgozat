@@ -46,7 +46,7 @@ public class LapCounter : MonoBehaviour
             FirebaseAuth auth = FirebaseAuth.DefaultInstance;
             FirebaseUser user = auth.CurrentUser;
             raceCompletePanel.SetActive(true);
-            winnerName.text = $"The winner is: {user.DisplayName}";
+            winnerName.text = $"The winner is:\n {user.DisplayName}";
             Time.timeScale = 0f;
             return;
         }
