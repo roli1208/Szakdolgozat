@@ -21,7 +21,8 @@ public class SoundEffectHandler : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        engineAS.mute = false;
+        tireScreeachingAS.mute = false;
     }
 
     // Update is called once per frame
@@ -30,7 +31,11 @@ public class SoundEffectHandler : MonoBehaviour
         EngineSFX();
         TireScreechSFX();
     }
-
+    public void muteGame()
+    {
+        engineAS.mute = true;
+        tireScreeachingAS.mute = true;
+    }
     private void TireScreechSFX()
     {
         if (carController.IsDrifting(out float lateralVelocity, out bool isBraking))
@@ -64,5 +69,6 @@ public class SoundEffectHandler : MonoBehaviour
         enginePitch = velocityMagnitude * 0.2f;
         enginePitch = Mathf.Clamp(enginePitch, 0.4f, 1.9f);
         engineAS.pitch = Mathf.Lerp(engineAS.pitch, enginePitch, Time.deltaTime * 1.3f);
+
     }
 }

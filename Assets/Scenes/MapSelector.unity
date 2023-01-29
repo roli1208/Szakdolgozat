@@ -949,9 +949,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: ButtonClickHandler, Assembly-CSharp
-        m_MethodName: onBackButtonClick
+      - m_Target: {fileID: 977743005}
+        m_TargetAssemblyTypeName: MapSelectorHandler, Assembly-CSharp
+        m_MethodName: onSecondMapClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

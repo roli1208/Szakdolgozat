@@ -17,6 +17,7 @@ public class ButtonClickHandler : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Time.timeScale = 1f;
         optionPanel.SetActive(false);
 
         int currentResIndex = 0;

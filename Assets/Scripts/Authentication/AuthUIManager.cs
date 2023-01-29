@@ -30,9 +30,11 @@ public class AuthUIManager : MonoBehaviour
 
     private void clearUI()
     {
+        FirebaseManager.instance.ClearOutputs();
         loginUI.SetActive(false);
         registerUI.SetActive(false);
-        FirebaseManager.instance.ClearOutputs();
+        //verifyEmailUI.SetActive(false);
+       // checkingForAccountUI.SetActive(false);
     }
     public void LoginScreen()
     {
@@ -43,5 +45,14 @@ public class AuthUIManager : MonoBehaviour
     {
         clearUI();
         registerUI.SetActive(true);
+    }
+    public void AwaitVerification(bool _emailSent, string _email, string _output)
+    {
+        clearUI();
+        verifyEmailUI.SetActive(true);
+        if (_emailSent)
+        {
+            verifyEmailText.text = $"Verification email sent to: {_email}";
+        }
     }
 }

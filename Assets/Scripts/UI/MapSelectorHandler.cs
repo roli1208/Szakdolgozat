@@ -13,6 +13,10 @@ public class MapSelectorHandler : MonoBehaviour
     {
         SceneManager.LoadScene("Map1");
     }
+    public void onSecondMapClick()
+    {
+        SceneManager.LoadScene("Map2");
+    }
     // Start is called before the first frame update
     void Start()
     {

@@ -12,14 +12,17 @@ public class PauseMenuHandler : MonoBehaviour
         pausePanel.SetActive(false);
         Time.timeScale = 1.0f;
     }
-
+    public void freezeGame()
+    {
+        Time.timeScale = 0f;
+    }
     // Update is called once per frame
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             pausePanel.gameObject.SetActive(true);
-            Time.timeScale = 0f;
+            freezeGame();
         }
     }
     public void onQuitClick()
