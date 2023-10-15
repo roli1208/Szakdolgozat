@@ -23,7 +23,7 @@ public static class FileHandler
     public static List<T> ReadListFromJSON<T>(string filename)
     {
         string content = ReadFile(GetPath(filename));
-
+        Debug.Log(GetPath(filename));
         if (string.IsNullOrEmpty(content) || content == "{}")
         {
             return new List<T>();
@@ -50,9 +50,23 @@ public static class FileHandler
 
     }
 
+    public static List<string> getMapNames(string path)
+    {
+        List<string> files = Directory.GetFiles(path).ToList();
+        List<string> fileNames = new List<string>();
+        foreach(string file in files)
+        {
+            fileNames.Add(Path.GetFileName(file));
+        }
+        return fileNames;
+    }
+
     private static string GetPath(string filename)
     {
-        return Application.persistentDataPath + "/" + filename;
+        string filePath = Application.persistentDataPath + "/maps/";
+        if (!Directory.Exists(filePath)) 
+            Directory.CreateDirectory(filePath);
+        return filePath + filename;
     }
 
     private static void WriteFile(string path, string content)

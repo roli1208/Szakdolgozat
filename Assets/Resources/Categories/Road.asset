@@ -9,8 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4795f6019b96c784ab3992cdf9e2e33d, type: 3}
-  m_Name: Road 3
+  m_Script: {fileID: 11500000, guid: 1f8b37b1b8714d14b834a2c4f70c3578, type: 3}
+  m_Name: Road
   m_EditorClassIdentifier: 
-  category: 0
-  tileBase: {fileID: 11400000, guid: 031385a8140ba3e4791db359661f01b9, type: 2}
+  placeType: 1
+  sortingOrder: 1

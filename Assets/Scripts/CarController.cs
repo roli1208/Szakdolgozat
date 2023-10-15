@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class CarController : MonoBehaviour
 {
@@ -53,14 +54,68 @@ public class CarController : MonoBehaviour
             actualDriftFactor = changedDriftFactor;
         }
     }
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerStay2D(Collider2D collision)
     {
-        if (collision == track)
+        if (collision.name == "Checkpoint")
         {
-            actualMaxSpeed = maxSpeed;
-            actualDriftFactor = driftFactor;
+            Tilemap map = collision.GetComponent<Tilemap>();
+            List<TilemapData> mapdata = SaveHandler.GetInstance().getMap();
+            foreach (var item in mapdata)
+            {
+                if (item.key == "Checkpoint")
+                {
+                    foreach (var i in item.tiles)
+                    {
+                        if (i.position == map.WorldToCell(transform.position))
+                        {
+                            Debug.Log(i.id);
+                        }
+                    }
+                }
+                Vector3Int removePos = map.WorldToCell(transform.position);
+                map.SetTile(removePos, null);
+            }
         }
     }
+
+    //private void OnTriggerEnter2D(Collider2D collision)
+    //{
+    //    List<TilemapData> map = SaveHandler.GetInstance().getMap();
+    //    if (collision == track)
+    //    {
+    //        actualMaxSpeed = maxSpeed;
+    //        actualDriftFactor = driftFactor;
+    //    }
+    //    Tilemap tilemap = collision.GetComponent<Tilemap>();
+
+
+    //    if (collision.name == "Checkpoint")
+    //    {
+    //        if (tilemap != null)
+    //        {
+
+                
+    //            Debug.Log("Collided Tile Position: " + collision.ClosestPoint(transform.position));
+    //        }
+    //        Debug.Log("CP");
+    //        Vector3Int cellPosition = new Vector3Int((int)collision.ClosestPoint(transform.position).x, (int)collision.ClosestPoint(transform.position).y, 0);
+    //        Debug.Log(cellPosition);
+    //        tilemap.SetTile(cellPosition, null);
+    //    }
+    //    foreach(var item in map)
+    //    {
+    //        if(item.key == "Checkpoint")
+    //        {
+    //            foreach (var i in item.tiles)
+    //            {
+    //                if (i.position == Vector3Int.RoundToInt(transform.position)){
+    //                    Debug.Log(i.id);
+    //                }
+    //            }
+    //        }
+    //    }
+    //    Debug.Log("Collision with: " + tilemap.GetTile(Vector3Int.RoundToInt(transform.position)));
+    //}
     void FixedUpdate()
     {
         ApplyEngineForce();

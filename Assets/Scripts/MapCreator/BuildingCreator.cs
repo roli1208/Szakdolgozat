@@ -4,12 +4,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Interactions;
 using UnityEngine.Tilemaps;
 
 public class BuildingCreator : Singleton<BuildingCreator>
 {
     [SerializeField] Tilemap preview, defaultMap;
     PlayerInput playerInput;
+    public Dictionary<Vector3Int, int> checkpointID = new Dictionary<Vector3Int, int>();
+    int currentId = 0;
 
     Camera _camera;
 
@@ -21,6 +24,30 @@ public class BuildingCreator : Singleton<BuildingCreator>
 
     BuildingObjectBase selectedObject;
 
+    bool holdAction;
+    Vector3Int holdStartPos;
+    BoundsInt bounds;
+
+    private Tilemap tilemap
+    {
+        get
+        {
+            if(selectedObject != null && selectedObject.Category != null && selectedObject.Category.Tilemap != null)
+            {
+                return selectedObject.Category.Tilemap;
+            }
+
+            return defaultMap;
+        }
+    }
+
+    public Dictionary<Vector3Int,int> CheckpointID
+    {
+        get
+        {
+            return checkpointID;
+        }
+    }
     protected override void Awake()
     {
         base.Awake();
@@ -32,7 +59,11 @@ public class BuildingCreator : Singleton<BuildingCreator>
         playerInput.Enable();
 
         playerInput.Gameplay.MousePos.performed += OnMouseMove;
+
         playerInput.Gameplay.MouseLeftClick.performed += OnLeftClick;
+        playerInput.Gameplay.MouseLeftClick.started += OnLeftClick;
+        playerInput.Gameplay.MouseLeftClick.canceled += OnLeftClick;
+
         playerInput.Gameplay.MouseRightClick.performed += OnRightClick;
     }
 
@@ -43,8 +74,26 @@ public class BuildingCreator : Singleton<BuildingCreator>
 
     private void OnLeftClick(InputAction.CallbackContext ctx)
     {
-        if(selectedObject != null && !EventSystem.current.IsPointerOverGameObject())
-            HandleDraw();
+        if (selectedObject != null && !EventSystem.current.IsPointerOverGameObject())
+        {
+            if(ctx.phase == InputActionPhase.Started)
+            {
+                holdAction = true;
+                if(ctx.interaction is TapInteraction)
+                {
+                    holdStartPos = currentGridPos;
+                }
+                HandleDraw();
+            }
+            else
+            {
+                if (ctx.interaction is SlowTapInteraction || ctx.interaction is TapInteraction && ctx.phase == InputActionPhase.Performed)
+                {
+                    holdAction = false;
+                    HandleDrawRelease();
+                }
+            }
+        }
     }
 
     private void OnDisable()
@@ -52,7 +101,11 @@ public class BuildingCreator : Singleton<BuildingCreator>
         playerInput.Disable();
 
         playerInput.Gameplay.MousePos.performed -= OnMouseMove;
+
         playerInput.Gameplay.MouseLeftClick.performed -= OnLeftClick;
+        playerInput.Gameplay.MouseLeftClick.started -= OnLeftClick;
+        playerInput.Gameplay.MouseLeftClick.canceled -= OnLeftClick;
+
         playerInput.Gameplay.MouseRightClick.performed -= OnRightClick;
     }
     private void OnMouseMove(InputAction.CallbackContext ctx)
@@ -86,6 +139,11 @@ public class BuildingCreator : Singleton<BuildingCreator>
                 currentGridPos = gridPos;
 
                 UpdatePreview();
+
+                if (holdAction)
+                {
+                    HandleDraw();
+                }
             }
         }
     }
@@ -96,12 +154,69 @@ public class BuildingCreator : Singleton<BuildingCreator>
         preview.SetTile(currentGridPos, tileBase);
     }
 
+
+   private void RectanglePreview()
+    {
+        preview.ClearAllTiles();
+
+        bounds.xMin = currentGridPos.x < holdStartPos.x ? currentGridPos.x : holdStartPos.x;
+        bounds.xMax = currentGridPos.x > holdStartPos.x ? currentGridPos.x : holdStartPos.x;
+        bounds.yMin = currentGridPos.y < holdStartPos.y ? currentGridPos.y : holdStartPos.y;
+        bounds.yMax = currentGridPos.y > holdStartPos.y ? currentGridPos.y : holdStartPos.y;
+
+        DrawBounds(preview);
+    }
+
+    private void DrawBounds(Tilemap map)
+    {
+        for (int x = bounds.xMin; x <= bounds.xMax; x++)
+        {
+            for (int y = bounds.yMin; y <= bounds.yMax; y++)
+            {
+                map.SetTile(new Vector3Int(x, y, 0), tileBase);
+            }
+        }
+    }
+
     private void HandleDraw()
     {
-        DrawItem();
+        if(selectedObject != null)
+        {
+            switch (selectedObject.PlaceType)
+            {
+                case PlaceType.Single: default:
+                    DrawItem();
+                    break;
+                case PlaceType.Rectangle:
+                    RectanglePreview();
+                    break;
+                
+            }
+        }
+
+    }
+    private void HandleDrawRelease()
+    {
+
+        if (selectedObject != null)
+        {
+            switch (selectedObject.PlaceType)
+            {
+                case PlaceType.Rectangle:
+                    DrawBounds(tilemap);
+                    preview.ClearAllTiles();
+                    break;
+
+            }
+        }
     }
     private void DrawItem()
     {
-        defaultMap.SetTile(currentGridPos, tileBase);
+
+        if(selectedObject.Category.name == "Checkpoint")
+        {
+            checkpointID.Add(currentGridPos, currentId++);   
+        }
+            tilemap.SetTile(currentGridPos, tileBase);
     }
 }

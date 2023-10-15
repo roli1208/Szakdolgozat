@@ -10,7 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4795f6019b96c784ab3992cdf9e2e33d, type: 3}
-  m_Name: Road 6
+  m_Name: Road 3
   m_EditorClassIdentifier: 
-  category: 0
-  tileBase: {fileID: 11400000, guid: 0b7f05af8fdcc644e975f9e5395b8704, type: 2}
+  category: {fileID: 11400000, guid: ac6b8cdce6b73a347a2b2636dae7fa03, type: 2}
+  tileBase: {fileID: 11400000, guid: 031385a8140ba3e4791db359661f01b9, type: 2}
+  placeType: 0

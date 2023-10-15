@@ -1,7 +1,5 @@
 using UnityEngine;
 
-//  Code from:
-// https://www.youtube.com/watch?v=ErJgQY5smnw&t=3s
 
 public abstract class Singleton<T> : MonoBehaviour where T : Component
 {
@@ -28,13 +26,6 @@ public abstract class Singleton<T> : MonoBehaviour where T : Component
         return instance;
     }
 
-    /* IMPORTANT!!! To use Awake in a derived class you need to do it this way
-     * protected override void Awake()
-     * {
-     *     base.Awake();
-     *     //Your code goes here
-     * }
-     * */
 
     protected virtual void Awake()
     {
