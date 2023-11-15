@@ -10,17 +10,24 @@ using UnityEngine.Tilemaps;
 public class BuildingCreator : Singleton<BuildingCreator>
 {
     [SerializeField] Tilemap preview, defaultMap;
+    [SerializeField] GameObject handler;
     PlayerInput playerInput;
     public Dictionary<Vector3Int, int> checkpointID = new Dictionary<Vector3Int, int>();
     int currentId = 0;
-
+    public 
     Camera _camera;
+    CarController carController;
 
     Vector2 mousePos;
     Vector3Int currentGridPos;
     Vector3Int lastGridPos;
 
+    LineRenderer lineRenderer;
+
     TileBase tileBase;
+    List<Vector3> waypointPositions = new List<Vector3>();
+
+    [SerializeField] public GameObject waypoint;
 
     BuildingObjectBase selectedObject;
 
@@ -51,6 +58,7 @@ public class BuildingCreator : Singleton<BuildingCreator>
     protected override void Awake()
     {
         base.Awake();
+        carController = GameObject.FindGameObjectWithTag("Car").GetComponent<CarController>();
         playerInput = new PlayerInput();
         _camera = Camera.main;
     }
@@ -94,6 +102,11 @@ public class BuildingCreator : Singleton<BuildingCreator>
                 }
             }
         }
+    }
+
+    private void Start()
+    {
+        lineRenderer = GetComponent<LineRenderer>();
     }
 
     private void OnDisable()
@@ -212,11 +225,37 @@ public class BuildingCreator : Singleton<BuildingCreator>
     }
     private void DrawItem()
     {
-
-        if(selectedObject.Category.name == "Checkpoint")
+        List<string> corners = new List<string>{ "Road", "Road 2", "Road 4", "Road 7" };
+        if (selectedObject.Category.name == "Checkpoint")
         {
-            checkpointID.Add(currentGridPos, currentId++);   
+            checkpointID.Add(currentGridPos, currentId++);
         }
-            tilemap.SetTile(currentGridPos, tileBase);
+        tilemap.SetTile(currentGridPos, tileBase);
+        Vector3 pos = new Vector3(currentGridPos.x + 0.5f, currentGridPos.y + 0.5f, currentGridPos.z);
+        GameObject wp = Instantiate(waypoint, pos, Quaternion.identity);
+        Waypoint wps = wp.GetComponent<Waypoint>();
+        if (corners.Contains(selectedObject.name))
+        {
+            wps.throttlePercent = 0.5f;
+        }
+        else
+        {
+            wps.throttlePercent = 1;
+        }
+        waypointPositions.Add(pos);
+        DrawLine();
+    }
+    private void DrawLine()
+    {
+        if(waypointPositions.Count > 1)
+        {
+            Debug.Log("rendering line");
+            int count = waypointPositions.Count;
+            lineRenderer.positionCount = count;
+            for (int i = 0; i < count; i++)
+            {
+                lineRenderer.SetPosition(i, waypointPositions[i]);
+            }
+        }
     }
 }

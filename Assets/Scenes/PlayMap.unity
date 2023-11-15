@@ -628,7 +628,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1685703083}
         m_TargetAssemblyTypeName: SaveHandler, Assembly-CSharp
-        m_MethodName: onLoad
+        m_MethodName: onClickLoad
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -706,10 +706,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44da267eb28260446bf741935c61b0eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  savePanel: {fileID: 0}
+  loadPanel: {fileID: 0}
+  saveNameText: {fileID: 0}
+  mapList: {fileID: 0}
   bounds:
     m_Position: {x: 0, y: 0, z: 0}
     m_Size: {x: 0, y: 0, z: 0}
-  filename: tilemapData.json
   data: []
 --- !u!4 &1685703084
 Transform:

@@ -23,9 +23,11 @@ public static class FileHandler
     public static List<T> ReadListFromJSON<T>(string filename)
     {
         string content = ReadFile(GetPath(filename));
+        Debug.Log("content: " + content);
         Debug.Log(GetPath(filename));
         if (string.IsNullOrEmpty(content) || content == "{}")
         {
+            Debug.Log(content);
             return new List<T>();
         }
 
@@ -38,7 +40,6 @@ public static class FileHandler
     public static T ReadFromJSON<T>(string filename)
     {
         string content = ReadFile(GetPath(filename));
-
         if (string.IsNullOrEmpty(content) || content == "{}")
         {
             return default(T);
