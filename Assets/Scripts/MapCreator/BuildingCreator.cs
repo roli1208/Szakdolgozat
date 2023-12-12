@@ -1,11 +1,16 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Interactions;
 using UnityEngine.Tilemaps;
+using System.Threading;
+using UnityEngine.SceneManagement;
 
 public class BuildingCreator : Singleton<BuildingCreator>
 {
@@ -17,6 +22,12 @@ public class BuildingCreator : Singleton<BuildingCreator>
     public 
     Camera _camera;
     CarController carController;
+    bool isFirst = true;
+    public Vector2 Spawnpoint;
+    [SerializeField] BuildingObjectBase finish;
+    [SerializeField] BuildingObjectBase grass;
+    [SerializeField] BuildingObjectBase sand;
+    [SerializeField] TextMeshProUGUI background;
 
     Vector2 mousePos;
     Vector3Int currentGridPos;
@@ -26,6 +37,7 @@ public class BuildingCreator : Singleton<BuildingCreator>
 
     TileBase tileBase;
     List<Vector3> waypointPositions = new List<Vector3>();
+    [SerializeField] public List<Waypoint> waypoints = new List<Waypoint>();
 
     [SerializeField] public GameObject waypoint;
 
@@ -101,12 +113,37 @@ public class BuildingCreator : Singleton<BuildingCreator>
                     HandleDrawRelease();
                 }
             }
+            isFirst = false;
+        }
+       
+    }
+    
+    public void changeBackground()
+    {
+        TileBase current;
+        if(background.text != "Grass")
+        {
+            current = grass.TileBase;
+            background.text = "Grass";
+        }
+        else
+        {
+            current = sand.TileBase;
+            background.text = "Sand";
+        }
+        for (int x = -9; x <= 8; x++)
+        {
+            for (int y = 4; y >= -5; y--)
+            {
+                grass.Category.Tilemap.SetTile(new Vector3Int(x, y, 0), current);
+            }
         }
     }
 
     private void Start()
     {
         lineRenderer = GetComponent<LineRenderer>();
+        background.text = "None";
     }
 
     private void OnDisable()
@@ -203,7 +240,6 @@ public class BuildingCreator : Singleton<BuildingCreator>
                 case PlaceType.Rectangle:
                     RectanglePreview();
                     break;
-                
             }
         }
 
@@ -223,27 +259,39 @@ public class BuildingCreator : Singleton<BuildingCreator>
             }
         }
     }
+    GameObject wp;
     private void DrawItem()
     {
-        List<string> corners = new List<string>{ "Road", "Road 2", "Road 4", "Road 7" };
+        List<string> corners = new List<string> { "Road", "Road 2", "Road 4", "Road 7" };
         if (selectedObject.Category.name == "Checkpoint")
         {
             checkpointID.Add(currentGridPos, currentId++);
         }
+        Debug.Log("ADD TILE: " + currentGridPos);
         tilemap.SetTile(currentGridPos, tileBase);
-        Vector3 pos = new Vector3(currentGridPos.x + 0.5f, currentGridPos.y + 0.5f, currentGridPos.z);
-        GameObject wp = Instantiate(waypoint, pos, Quaternion.identity);
-        Waypoint wps = wp.GetComponent<Waypoint>();
-        if (corners.Contains(selectedObject.name))
+        if (isFirst)
         {
-            wps.throttlePercent = 0.5f;
+            Debug.Log("Adding finish");
+            finish.Category.Tilemap.SetTile(currentGridPos, finish.TileBase);
+            Spawnpoint = new Vector2(currentGridPos.x - 0.5f, currentGridPos.y + 0.5f);
         }
-        else
+        if (selectedObject.Category.name != "Checkpoint")
         {
-            wps.throttlePercent = 1;
+            Vector3 pos = new Vector3(currentGridPos.x + 0.5f, currentGridPos.y + 0.5f, currentGridPos.z);
+            wp = Instantiate(waypoint, pos, Quaternion.identity);
+            Waypoint wps = wp.GetComponent<Waypoint>();
+            if (corners.Contains(selectedObject.name))
+            {
+                wps.maxSpeed = carController.maxSpeed * 0.35f;
+            }
+            else
+            {
+                wps.maxSpeed = carController.maxSpeed;
+            }
+            waypointPositions.Add(pos);
+            waypoints.Add(wps);
+            DrawLine();
         }
-        waypointPositions.Add(pos);
-        DrawLine();
     }
     private void DrawLine()
     {

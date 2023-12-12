@@ -20,4 +20,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Map2.unity
     guid: f416598f62864954aa55fd88ff77e4aa
+  - enabled: 1
+    path: Assets/Scenes/PlayMap.unity
+    guid: f565082f89c8ef3468a6fc87f146cf9c
   m_configObjects: {}

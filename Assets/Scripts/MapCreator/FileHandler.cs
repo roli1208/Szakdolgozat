@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -7,11 +8,18 @@ using UnityEngine;
 public static class FileHandler
 {
 
-    public static void SaveToJSON<T>(List<T> toSave, string filename)
+    public static void SaveToJSON<T>(List<Waypoint> waypoints, List<T> toSave, string filename)
     {
         Debug.Log(GetPath(filename));
         string content = JsonHelper.ToJson<T>(toSave.ToArray());
+        string waypointContent = "";
+        foreach (Waypoint wp in waypoints)
+        {
+            waypointContent += $"Position: {wp.transform.position.x} {wp.transform.position.y} {wp.transform.position.z}, MaxSpeed: {wp.maxSpeed}\n";
+        }
+        waypointContent += $"Spawnpoint: {BuildingCreator.GetInstance().Spawnpoint.x} {BuildingCreator.GetInstance().Spawnpoint.y}";
         WriteFile(GetPath(filename), content);
+        WriteFile(GetPath(filename + "_waypoints"), waypointContent);
     }
 
     public static void SaveToJSON<T>(T toSave, string filename)
@@ -62,7 +70,7 @@ public static class FileHandler
         return fileNames;
     }
 
-    private static string GetPath(string filename)
+    public static string GetPath(string filename)
     {
         string filePath = Application.persistentDataPath + "/maps/";
         if (!Directory.Exists(filePath)) 
@@ -80,7 +88,7 @@ public static class FileHandler
         }
     }
 
-    private static string ReadFile(string path)
+    public static string ReadFile(string path)
     {
         if (File.Exists(path))
         {

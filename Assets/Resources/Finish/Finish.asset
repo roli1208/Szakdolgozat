@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Finish
   m_EditorClassIdentifier: 
   category: {fileID: 11400000, guid: 7d029dade0268724b9b13c1631bab85e, type: 2}
-  tileBase: {fileID: 11400000, guid: 7f466e27841bb504a9c0761abc4a81be, type: 2}
+  tileBase: {fileID: 11400000, guid: 83a8c1d54fb1324459af125ce29dc077, type: 2}
   placeType: 0

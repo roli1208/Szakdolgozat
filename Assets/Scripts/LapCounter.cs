@@ -6,14 +6,18 @@ using System.IO;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class LapCounter : MonoBehaviour
 {
-    public CheckPoint[] checkPoints;
     public int passedCheckPointNum = 0;
     public TMP_Text lapCounterText;
     public TMP_Text winnerName;
     public GameObject raceCompletePanel;
+    [SerializeField] public List<TilemapData> mapdata;
+    [SerializeField] public List<TileInfo> checkpoints;
+    [SerializeField] public Tilemap checkpoint;
+    [SerializeField] public TileBase checkpointTile;
 
     public int lapNum = 1;
     int completedLapNum = 0;
@@ -22,24 +26,38 @@ public class LapCounter : MonoBehaviour
 
     public event Action<LapCounter> onPassCheckPoint;
 
+    public void addTiles()
+    {
+        Debug.Log("Called!!!");
+        foreach (var tile in checkpoints)
+        {
+            checkpoint.SetTile(tile.position, checkpointTile);
+        }
+    }
+
     private void Start()
     {
-        checkPoints = GameObject.FindObjectsOfType<CheckPoint>();
-        foreach (CheckPoint cp in checkPoints)
+        mapdata = SaveHandler.GetInstance().getMap();
+        checkpoint = GameObject.Find("Checkpoint").GetComponent<Tilemap>();
+        foreach (var item in mapdata)
         {
-            if(cp.checkPointNum != 1)
+           if(item.key == "Checkpoint")
             {
-                cp.gameObject.SetActive(false);
+                foreach (var tile in item.tiles)
+                {
+                    checkpoints.Add(tile);
+                }
             }
         }
     }
     private void FixedUpdate()
     {
-        if(!isRaceComplete)
-        lapCounterText.text = $"Laps: {completedLapNum+1} / {lapNum}";
+        if (!isRaceComplete)
+            lapCounterText.text = $"Laps: {completedLapNum+1} / {lapNum}";
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        Debug.Log("COLLISION: " + collision.name);
         
         if (isRaceComplete)
         {
@@ -50,35 +68,16 @@ public class LapCounter : MonoBehaviour
             Time.timeScale = 0f;
             return;
         }
-        if (collision.CompareTag("CheckPoint"))
+        if (collision.name == "Checkpoint")
         {
-            CheckPoint checkPoint = collision.GetComponent<CheckPoint>();
-
-            if(passedCheckPointNum + 1 == checkPoint.checkPointNum)
+            int currentID = CarController.currentID;
+            Debug.Log("currentID :" + currentID);
+            Debug.Log("Count: " + checkpoints.Count);
+            if (currentID >= (checkpoints.Count - 2))
             {
-                passedCheckPointNum = checkPoint.checkPointNum;
-
-                if (checkPoint.isFinish)
-                {
-                    passedCheckPointNum = 0;
-                    completedLapNum++;
-                    if(completedLapNum >= lapNum)
-                    {
-                        isRaceComplete = true;
-                    }
-                }
-
-                onPassCheckPoint?.Invoke(this);
+                completedLapNum++;
+                addTiles();
             }
-        }
-        foreach (CheckPoint cp in checkPoints)
-        {
-            if (cp.checkPointNum == passedCheckPointNum + 1)
-            {
-                cp.gameObject.SetActive(true);
-            }
-            else
-                cp.gameObject.SetActive(false);
         }
     }
 }

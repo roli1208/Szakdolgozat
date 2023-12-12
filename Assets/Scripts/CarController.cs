@@ -30,6 +30,12 @@ public class CarController : MonoBehaviour
     //Accest to Unity components
     Rigidbody2D carRigidbody2D;
 
+    LapCounter lapCounter;
+
+    static public int currentID = 0;
+
+    Tilemap checkpoint;
+
     void Awake()
     {
         carRigidbody2D = GetComponent<Rigidbody2D>();
@@ -39,6 +45,7 @@ public class CarController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        checkpoint = GameObject.Find("Checkpoint").GetComponent<Tilemap>();
     }
 
     // Update is called once per frame
@@ -56,6 +63,7 @@ public class CarController : MonoBehaviour
     }
     private void OnTriggerStay2D(Collider2D collision)
     {
+        lapCounter = GetComponent<LapCounter>();
         if (collision.name == "Checkpoint")
         {
             Tilemap map = collision.GetComponent<Tilemap>();
@@ -66,14 +74,14 @@ public class CarController : MonoBehaviour
                 {
                     foreach (var i in item.tiles)
                     {
-                        if (i.position == map.WorldToCell(transform.position))
+                        if ((i.position == map.WorldToCell(transform.position) && (currentID + 1) == i.id) || (i.id == 0 && i.position == map.WorldToCell(transform.position)))
                         {
-                            Debug.Log(i.id);
+                            currentID = i.id;
+                            Vector3Int removePos = map.WorldToCell(transform.position);
+                            map.SetTile(removePos, null);
                         }
                     }
                 }
-                Vector3Int removePos = map.WorldToCell(transform.position);
-                map.SetTile(removePos, null);
             }
         }
     }

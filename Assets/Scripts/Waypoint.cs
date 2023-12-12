@@ -4,7 +4,10 @@ using UnityEngine;
 
 public class Waypoint : MonoBehaviour
 {
-    public float throttlePercent;
+    public float maxSpeed;
+    public bool updated;
+    public float distace;
+    public float previousDistance;
 
     // Start is called before the first frame update
     void Start()

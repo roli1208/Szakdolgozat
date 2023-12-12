@@ -18,6 +18,10 @@ public class SaveHandler : Singleton<SaveHandler>
     [SerializeField] TMP_Dropdown mapList;
     [SerializeField] BoundsInt bounds;
     [SerializeField] List<TilemapData> data;
+    [SerializeField] List<Waypoint> waypoints = new List<Waypoint>();
+    [SerializeField] public GameObject waypoint;
+    [SerializeField] GameObject AICar;
+    [SerializeField] GameObject PlayerCar;
 
     private void initTileReferences()
     {
@@ -47,7 +51,6 @@ public class SaveHandler : Singleton<SaveHandler>
             Debug.Log("map init: " + map);
             tilemaps.Add(map.name, map);
         }
-
     }
 
     public void showSavePanel()
@@ -59,14 +62,12 @@ public class SaveHandler : Singleton<SaveHandler>
     {
         savePanel.SetActive(false);
     }
-    public void toJSON()
-    {
-
-    }
     public void onSave()
     {
+        closeSavePanel();
         initTilemaps();
         initTileReferences();
+        waypoints = BuildingCreator.GetInstance().waypoints;
         string fileName = saveNameText.text;
         List<TilemapData> data = new List<TilemapData>();
         CheckpointIDs = BuildingCreator.GetInstance().checkpointID;
@@ -108,22 +109,10 @@ public class SaveHandler : Singleton<SaveHandler>
         }
         TilemapData td = new TilemapData();
         td.numOfLaps = 8;
-        td.numOfPlayers = 1;
         data.Add(td);
+        Debug.Log("waypoints: " + waypoints.Count);
+        FileHandler.SaveToJSON<TilemapData>(waypoints, data, fileName + ".json");
 
-        FileHandler.SaveToJSON<TilemapData>(data, fileName + ".json");
-
-    }
-
-    public void onClickLoad()
-    {
-        loadPanel.SetActive(true);
-        mapList.ClearOptions();
-        string filePath = Application.persistentDataPath + "/maps/";
-        Debug.Log(FileHandler.getMapNames(filePath));
-        if (!Directory.Exists(filePath))
-            Directory.CreateDirectory(filePath);
-        mapList.AddOptions(FileHandler.getMapNames(filePath));
     }
 
     public void closeLoadPanel()
@@ -131,52 +120,63 @@ public class SaveHandler : Singleton<SaveHandler>
         loadPanel.SetActive(false);
     }
 
-    public void onLoad()
+
+    public void onLoad(string name)
     {
-        string selectedMapName = mapList.options[mapList.value].text;
-        Debug.Log(selectedMapName);
+        Debug.Log("LOAD MAP: " + name);
+        initTilemaps();
+        initTileReferences();
+        string selectedMapName = name;
         data = FileHandler.ReadListFromJSON<TilemapData>(selectedMapName);
-        Debug.Log("data: " + data.ToString());
         try
         {
             foreach (var mapData in data)
             {
-                Debug.Log("mapdata: " + mapData);
-                Debug.Log("key: " + mapData.key);
                 List<String> myKeys = tilemaps.Keys.ToList();
-                foreach (string key in myKeys) {
-                    Debug.Log("KEYS: " + key);
-                }
-                    var map = tilemaps[mapData.key];
-                    Debug.Log("map: " + map);
-                    map.ClearAllTiles();
-                    Debug.Log("after clearalltiles: " + mapData.key);
-                    Debug.Log("tiles: " + mapData.tiles);
-                    Debug.Log("map tiles: " + mapData.tiles != null);
-                    Debug.Log("map tiles count: " + mapData.tiles.Count);
-                    Debug.Log("map tiles preview: " + mapData.key != "Preview");
-                    if (mapData.tiles != null && mapData.tiles.Count > 0 && mapData.key != "Preview")
+                var map = tilemaps[mapData.key];
+                map.ClearAllTiles();
+                Debug.Log("map tiles preview: " + mapData.key != "Preview");
+                if (mapData.tiles != null && mapData.tiles.Count > 0 && mapData.key != "Preview")
+                {
+                    foreach (TileInfo tile in mapData.tiles)
                     {
-                        foreach (TileInfo tile in mapData.tiles)
+                        Debug.Log("tile: " + tile);
+                        if (guidBase.ContainsKey(tile.guid))
                         {
-                            Debug.Log("tile: " + tile);
-                            if (guidBase.ContainsKey(tile.guid))
-                            {
-                                map.SetTile(tile.position, guidBase[tile.guid]);
-                            }
-                            else
-                            {
-                                Debug.LogError("Cannot found");
-                            }
-
+                            map.SetTile(tile.position, guidBase[tile.guid]);
                         }
+                        else
+                        {
+                            Debug.LogError("Cannot found");
+                        }
+
+                    }
                 }
             }
-        } catch (Exception e)
+        }catch(Exception e)
         {
             Debug.Log(e);
         }
-        loadPanel.SetActive(false);
+        string wp_data = FileHandler.ReadFile(FileHandler.GetPath(selectedMapName + "_waypoints"));
+        string[] wp_lines = wp_data.Split("\n");
+        foreach(string line in wp_lines)
+        {
+            if (line != "" && line.Split()[0] != "Spawnpoint:")
+            {
+                float x = (float)Convert.ToDouble(line.Split()[1]);
+                float y = (float)Convert.ToDouble(line.Split()[2]);
+                float maxSpeed = (float)Convert.ToDouble(line.Split()[5]);
+                Vector3 pos = new Vector3(x, y, 0);
+                GameObject wp = Instantiate(waypoint, pos, Quaternion.identity);
+                Waypoint wps = wp.GetComponent<Waypoint>();
+                wps.maxSpeed = maxSpeed;
+            }
+            if(line.Split()[0] == "Spawnpoint:")
+            {
+                AICar.transform.position = new Vector3((float)Convert.ToDouble(line.Split()[1]),(float)Convert.ToDouble(line.Split()[2]),0);
+            }
+        }
+            loadPanel.SetActive(false);
     }
     public List<TilemapData> getMap()
     {
