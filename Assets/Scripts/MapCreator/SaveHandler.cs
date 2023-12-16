@@ -5,6 +5,8 @@ using UnityEngine.Tilemaps;
 using TMPro;
 using System.IO;
 using System.Linq;
+using System.Collections;
+using System.Threading;
 
 public class SaveHandler : Singleton<SaveHandler>
 {
@@ -16,6 +18,7 @@ public class SaveHandler : Singleton<SaveHandler>
     [SerializeField] GameObject loadPanel;
     [SerializeField] TMP_InputField saveNameText;
     [SerializeField] TMP_Dropdown mapList;
+    [SerializeField] TMP_InputField numOfLaps;
     [SerializeField] BoundsInt bounds;
     [SerializeField] List<TilemapData> data;
     [SerializeField] List<Waypoint> waypoints = new List<Waypoint>();
@@ -27,7 +30,6 @@ public class SaveHandler : Singleton<SaveHandler>
     {
         BuildingObjectBase[] buildables = Resources.LoadAll<BuildingObjectBase>("");
 
-        Debug.Log("Buildables: " + buildables.Length);
         foreach (BuildingObjectBase buildable in buildables)
         {
             if (!tileBase.ContainsKey(buildable.TileBase))
@@ -44,11 +46,9 @@ public class SaveHandler : Singleton<SaveHandler>
     private void initTilemaps()
     {
         Tilemap[] maps = FindObjectsOfType<Tilemap>();
-        Debug.Log("maps init: " + maps);
 
         foreach (var map in maps)
         {
-            Debug.Log("map init: " + map);
             tilemaps.Add(map.name, map);
         }
     }
@@ -74,7 +74,6 @@ public class SaveHandler : Singleton<SaveHandler>
 
         foreach (var map in tilemaps)
         {
-            Debug.Log("map onsave: " + map.ToString());
             TilemapData mapData = new TilemapData();
             mapData.key = map.Key;
             TileInfo ti;
@@ -86,12 +85,9 @@ public class SaveHandler : Singleton<SaveHandler>
                 for (int y = mapBounds.yMin; y < mapBounds.yMax; y++)
                 {
                     Vector3Int pos = new Vector3Int(x, y, 0);
-                    Debug.Log("map value: " + map.Value);
                     TileBase tile = map.Value.GetTile(pos);
-                    Debug.Log("tile onsave: " + tile);
                     if (tile != null && tileBase.ContainsKey(tile))
                     {
-                        Debug.Log("in if");
                         string guid = tileBase[tile].name;
                         Vector3Int key = new Vector3Int(x, y, 0);
                         if (CheckpointIDs.ContainsKey(key)) {
@@ -99,19 +95,15 @@ public class SaveHandler : Singleton<SaveHandler>
                             ti = new TileInfo(pos, guid, id);
                         }
                         else { ti = new TileInfo(pos, guid, -1); }
-                        Debug.Log("adding tile: " + ti);
                         mapData.tiles.Add(ti);
                     }
                 }
             }
-            Debug.Log("mapdata: " + mapData);
             data.Add(mapData);
         }
         TilemapData td = new TilemapData();
-        td.numOfLaps = 8;
         data.Add(td);
-        Debug.Log("waypoints: " + waypoints.Count);
-        FileHandler.SaveToJSON<TilemapData>(waypoints, data, fileName + ".json");
+        FileHandler.SaveToJSON<TilemapData>(waypoints, data, fileName + ".json", Convert.ToInt32(numOfLaps.text));
 
     }
 
@@ -123,7 +115,6 @@ public class SaveHandler : Singleton<SaveHandler>
 
     public void onLoad(string name)
     {
-        Debug.Log("LOAD MAP: " + name);
         initTilemaps();
         initTileReferences();
         string selectedMapName = name;
@@ -135,12 +126,10 @@ public class SaveHandler : Singleton<SaveHandler>
                 List<String> myKeys = tilemaps.Keys.ToList();
                 var map = tilemaps[mapData.key];
                 map.ClearAllTiles();
-                Debug.Log("map tiles preview: " + mapData.key != "Preview");
                 if (mapData.tiles != null && mapData.tiles.Count > 0 && mapData.key != "Preview")
                 {
                     foreach (TileInfo tile in mapData.tiles)
                     {
-                        Debug.Log("tile: " + tile);
                         if (guidBase.ContainsKey(tile.guid))
                         {
                             map.SetTile(tile.position, guidBase[tile.guid]);
@@ -161,7 +150,8 @@ public class SaveHandler : Singleton<SaveHandler>
         string[] wp_lines = wp_data.Split("\n");
         foreach(string line in wp_lines)
         {
-            if (line != "" && line.Split()[0] != "Spawnpoint:")
+            
+            if (line != "" && line.Split()[0] != "Spawnpoint:" && line.Split()[0] != "Lapnum:")
             {
                 float x = (float)Convert.ToDouble(line.Split()[1]);
                 float y = (float)Convert.ToDouble(line.Split()[2]);
@@ -173,11 +163,17 @@ public class SaveHandler : Singleton<SaveHandler>
             }
             if(line.Split()[0] == "Spawnpoint:")
             {
-                AICar.transform.position = new Vector3((float)Convert.ToDouble(line.Split()[1]),(float)Convert.ToDouble(line.Split()[2]),0);
+                AICar.transform.position = new Vector3((float)Convert.ToDouble(line.Split()[1])+0.6f,(float)Convert.ToDouble(line.Split()[2]) + 0.25f, 0);
+                PlayerCar.transform.position = new Vector3((float)Convert.ToDouble(line.Split()[1])+0.6f, (float)Convert.ToDouble(line.Split()[2]) - 0.25f, 0);
+            }
+            if (line.Split()[0] == "Lapnum:")
+            {
+                LapCounter.lapNum = Convert.ToInt32(line.Split()[1]);
             }
         }
-            loadPanel.SetActive(false);
+        loadPanel.SetActive(false);
     }
+
     public List<TilemapData> getMap()
     {
         return data;
@@ -188,8 +184,6 @@ public class TilemapData
 {
     public string key;
     public List<TileInfo> tiles = new List<TileInfo>();
-    public int numOfLaps;
-    public int numOfPlayers;
 }
 
 [Serializable]

@@ -34,6 +34,8 @@ public class CarController : MonoBehaviour
 
     static public int currentID = 0;
 
+    public string currentTilemap;
+
     Tilemap checkpoint;
 
     void Awake()
@@ -53,18 +55,10 @@ public class CarController : MonoBehaviour
     {
 
     }
-    private void OnTriggerExit2D(Collider2D collision)
-    {
-        if (collision != collision.CompareTag("CheckPoint"))
-        {
-            actualMaxSpeed = changedMaxSpeed;
-            actualDriftFactor = changedDriftFactor;
-        }
-    }
     private void OnTriggerStay2D(Collider2D collision)
     {
         lapCounter = GetComponent<LapCounter>();
-        if (collision.name == "Checkpoint")
+        if (collision.name == "Checkpoint" && gameObject.name == "Car")
         {
             Tilemap map = collision.GetComponent<Tilemap>();
             List<TilemapData> mapdata = SaveHandler.GetInstance().getMap();
@@ -86,44 +80,27 @@ public class CarController : MonoBehaviour
         }
     }
 
-    //private void OnTriggerEnter2D(Collider2D collision)
-    //{
-    //    List<TilemapData> map = SaveHandler.GetInstance().getMap();
-    //    if (collision == track)
-    //    {
-    //        actualMaxSpeed = maxSpeed;
-    //        actualDriftFactor = driftFactor;
-    //    }
-    //    Tilemap tilemap = collision.GetComponent<Tilemap>();
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
 
-
-    //    if (collision.name == "Checkpoint")
-    //    {
-    //        if (tilemap != null)
-    //        {
-
-                
-    //            Debug.Log("Collided Tile Position: " + collision.ClosestPoint(transform.position));
-    //        }
-    //        Debug.Log("CP");
-    //        Vector3Int cellPosition = new Vector3Int((int)collision.ClosestPoint(transform.position).x, (int)collision.ClosestPoint(transform.position).y, 0);
-    //        Debug.Log(cellPosition);
-    //        tilemap.SetTile(cellPosition, null);
-    //    }
-    //    foreach(var item in map)
-    //    {
-    //        if(item.key == "Checkpoint")
-    //        {
-    //            foreach (var i in item.tiles)
-    //            {
-    //                if (i.position == Vector3Int.RoundToInt(transform.position)){
-    //                    Debug.Log(i.id);
-    //                }
-    //            }
-    //        }
-    //    }
-    //    Debug.Log("Collision with: " + tilemap.GetTile(Vector3Int.RoundToInt(transform.position)));
-    //}
+        if (collision.name == "Track")
+        {
+            Debug.Log("ACTUALSPEED");
+            actualMaxSpeed = maxSpeed;
+            actualDriftFactor = driftFactor;
+        }
+        else if (collision.name == "Background")
+        {
+            actualMaxSpeed = changedMaxSpeed;
+            actualDriftFactor = changedDriftFactor;
+            Debug.Log("Changed Speed");
+        }
+        else
+        {
+            actualMaxSpeed = maxSpeed;
+            actualDriftFactor = driftFactor;
+        }
+    }
     void FixedUpdate()
     {
         ApplyEngineForce();

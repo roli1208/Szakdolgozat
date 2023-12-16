@@ -53,9 +53,15 @@ public class ButtonClickHandler : MonoBehaviour
     {
         Application.Quit();
     }
+
     public void onOptionsClick()
     {
         optionPanel.SetActive(true);
+    }
+
+    public void onMapcreatorClick()
+    {
+        SceneManager.LoadScene("MapCreator");
     }
 
     public void setResolution()
@@ -82,6 +88,7 @@ public class ButtonClickHandler : MonoBehaviour
     }
     public void onClickSnigleplayer()
     {
+        Destroy(GameObject.Find("Handler"));
         SceneManager.LoadScene("MapSelector");
     }
 }

@@ -8,7 +8,7 @@ using UnityEngine;
 public static class FileHandler
 {
 
-    public static void SaveToJSON<T>(List<Waypoint> waypoints, List<T> toSave, string filename)
+    public static void SaveToJSON<T>(List<Waypoint> waypoints, List<T> toSave, string filename, int lapNum)
     {
         Debug.Log(GetPath(filename));
         string content = JsonHelper.ToJson<T>(toSave.ToArray());
@@ -17,7 +17,8 @@ public static class FileHandler
         {
             waypointContent += $"Position: {wp.transform.position.x} {wp.transform.position.y} {wp.transform.position.z}, MaxSpeed: {wp.maxSpeed}\n";
         }
-        waypointContent += $"Spawnpoint: {BuildingCreator.GetInstance().Spawnpoint.x} {BuildingCreator.GetInstance().Spawnpoint.y}";
+        waypointContent += $"Spawnpoint: {BuildingCreator.GetInstance().Spawnpoint.x} {BuildingCreator.GetInstance().Spawnpoint.y}\n";
+        waypointContent += $"Lapnum: {lapNum}";
         WriteFile(GetPath(filename), content);
         WriteFile(GetPath(filename + "_waypoints"), waypointContent);
     }

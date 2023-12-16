@@ -14,13 +14,16 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/MapSelector.unity
     guid: b81f7167a4c3a7f41815b0a33a750880
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Map1.unity
     guid: 2cda990e2423bbf4892e6590ba056729
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Map2.unity
     guid: f416598f62864954aa55fd88ff77e4aa
   - enabled: 1
     path: Assets/Scenes/PlayMap.unity
     guid: f565082f89c8ef3468a6fc87f146cf9c
+  - enabled: 1
+    path: Assets/Scenes/MapCreator.unity
+    guid: fba62eb4ac68f284b9a3dfebb1f70b3c
   m_configObjects: {}

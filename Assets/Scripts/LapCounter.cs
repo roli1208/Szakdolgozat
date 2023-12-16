@@ -1,9 +1,6 @@
 using Firebase.Auth;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -11,16 +8,18 @@ using UnityEngine.Tilemaps;
 public class LapCounter : MonoBehaviour
 {
     public int passedCheckPointNum = 0;
-    public TMP_Text lapCounterText;
-    public TMP_Text winnerName;
-    public GameObject raceCompletePanel;
+    [SerializeField] public TMP_Text lapCounterText;
+    [SerializeField] public TMP_Text winnerName;
+    [SerializeField] public GameObject raceCompletePanel;
     [SerializeField] public List<TilemapData> mapdata;
     [SerializeField] public List<TileInfo> checkpoints;
     [SerializeField] public Tilemap checkpoint;
     [SerializeField] public TileBase checkpointTile;
+    bool aiWon = false;
 
-    public int lapNum = 1;
+    static public int lapNum = 3;
     int completedLapNum = 0;
+    int aiCompletedLapNum;
 
     bool isRaceComplete = false;
 
@@ -37,6 +36,7 @@ public class LapCounter : MonoBehaviour
 
     private void Start()
     {
+        aiCompletedLapNum = 0;
         mapdata = SaveHandler.GetInstance().getMap();
         checkpoint = GameObject.Find("Checkpoint").GetComponent<Tilemap>();
         foreach (var item in mapdata)
@@ -58,26 +58,36 @@ public class LapCounter : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         Debug.Log("COLLISION: " + collision.name);
-        
+        if (aiCompletedLapNum > lapNum)
+        {
+            isRaceComplete = true;
+            aiWon = true;
+        }
+        if (completedLapNum > lapNum)
+        {
+            isRaceComplete = true;
+        }
         if (isRaceComplete)
         {
             FirebaseAuth auth = FirebaseAuth.DefaultInstance;
             FirebaseUser user = auth.CurrentUser;
             raceCompletePanel.SetActive(true);
-            winnerName.text = $"The winner is:\n {user.DisplayName}";
+            if (!aiWon)
+                winnerName.text = $"The winner is:\n {user.DisplayName}";
+            else
+                winnerName.text = $"The winner is:\n AICar";
+
             Time.timeScale = 0f;
             return;
         }
-        if (collision.name == "Checkpoint")
+        if (collision.name == "Finish" && gameObject.name == "AICar")
         {
-            int currentID = CarController.currentID;
-            Debug.Log("currentID :" + currentID);
-            Debug.Log("Count: " + checkpoints.Count);
-            if (currentID >= (checkpoints.Count - 2))
-            {
-                completedLapNum++;
-                addTiles();
-            }
+            aiCompletedLapNum++;
+        }
+        if (collision.name == "Finish" && CarController.currentID == (checkpoints.Count - 1))
+        {
+            addTiles();
+            completedLapNum++;
         }
     }
 }

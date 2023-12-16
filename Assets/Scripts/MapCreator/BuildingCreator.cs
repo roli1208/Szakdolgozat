@@ -21,7 +21,7 @@ public class BuildingCreator : Singleton<BuildingCreator>
     int currentId = 0;
     public 
     Camera _camera;
-    CarController carController;
+    [SerializeField] CarController carController;
     bool isFirst = true;
     public Vector2 Spawnpoint;
     [SerializeField] BuildingObjectBase finish;
@@ -131,9 +131,9 @@ public class BuildingCreator : Singleton<BuildingCreator>
             current = sand.TileBase;
             background.text = "Sand";
         }
-        for (int x = -9; x <= 8; x++)
+        for (int x = -11; x <= 11; x++)
         {
-            for (int y = 4; y >= -5; y--)
+            for (int y = 6; y >= -6; y--)
             {
                 grass.Category.Tilemap.SetTile(new Vector3Int(x, y, 0), current);
             }
@@ -267,11 +267,9 @@ public class BuildingCreator : Singleton<BuildingCreator>
         {
             checkpointID.Add(currentGridPos, currentId++);
         }
-        Debug.Log("ADD TILE: " + currentGridPos);
         tilemap.SetTile(currentGridPos, tileBase);
         if (isFirst)
         {
-            Debug.Log("Adding finish");
             finish.Category.Tilemap.SetTile(currentGridPos, finish.TileBase);
             Spawnpoint = new Vector2(currentGridPos.x - 0.5f, currentGridPos.y + 0.5f);
         }
@@ -297,7 +295,6 @@ public class BuildingCreator : Singleton<BuildingCreator>
     {
         if(waypointPositions.Count > 1)
         {
-            Debug.Log("rendering line");
             int count = waypointPositions.Count;
             lineRenderer.positionCount = count;
             for (int i = 0; i < count; i++)

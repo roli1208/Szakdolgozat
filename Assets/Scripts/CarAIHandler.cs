@@ -55,6 +55,7 @@ public class CarAIHandler : MonoBehaviour
 
         return steerAmount;
     }
+
     [SerializeField] float distanceFromWaypoint;
     [SerializeField] float difference;
     void followWaypoints()
@@ -119,7 +120,6 @@ public class CarAIHandler : MonoBehaviour
     {
         if (waypoints.Count >= 4)
         {
-            Debug.Log("IN IF");
             Waypoint firstWps = waypoints[1].GetComponent<Waypoint>();
             Waypoint secondWps = waypoints[2].GetComponent<Waypoint>();
             Waypoint thirdWps = waypoints[3].GetComponent<Waypoint>();
@@ -140,7 +140,6 @@ public class CarAIHandler : MonoBehaviour
                 return accelerationForce;
             }
         }
-        Debug.Log("OUT IF");
         return carController.accelerationInput;
     }
 }
